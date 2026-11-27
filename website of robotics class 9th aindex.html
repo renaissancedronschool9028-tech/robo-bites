@@ -1,0 +1,879 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ROBO BITES | Robotic Restaurant</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+:root {
+    --blue: #00d9ff;
+    --dark: #080d18;
+    --card: #111c30;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: var(--dark);
+    color: white;
+    line-height: 1.6;
+}
+
+button, input, textarea, select {
+    font: inherit;
+}
+
+/* WELCOME INTRO */
+#welcomeScreen {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: radial-gradient(circle, #173b5c, #050912);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+    transition: opacity .7s, visibility .7s;
+}
+
+#welcomeScreen.hide {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.introRobot {
+    font-size: 110px;
+    animation: robotEntry 1.3s ease-out, float 2s infinite 1.3s;
+}
+
+#welcomeScreen h1 {
+    color: var(--blue);
+    font-size: clamp(30px, 6vw, 48px);
+    margin: 15px 0;
+}
+
+#welcomeScreen p {
+    color: #d7eaff;
+    margin-bottom: 22px;
+}
+
+@keyframes robotEntry {
+    from {
+        transform: translateY(180px) scale(.3);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+    50% { transform: translateY(-15px); }
+}
+
+/* LOADING SCREEN */
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+#loader .robot {
+    font-size: 65px;
+    animation: float .8s infinite;
+}
+
+.progress {
+    width: 180px;
+    height: 5px;
+    background: #26344c;
+    border-radius: 10px;
+    margin-top: 18px;
+    overflow: hidden;
+}
+
+.progress span {
+    display: block;
+    width: 0;
+    height: 100%;
+    background: var(--blue);
+    animation: loading 1.2s forwards;
+}
+
+@keyframes loading {
+    to { width: 100%; }
+}
+
+/* HEADER */
+header {
+    background: #0d1729;
+    padding: 16px 6%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 1px solid #17334c;
+}
+
+.logo {
+    color: var(--blue);
+    font-size: 25px;
+    font-weight: bold;
+}
+
+nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+}
+
+nav a {
+    text-decoration: none;
+    color: white;
+    font-size: 14px;
+}
+
+nav a:hover {
+    color: var(--blue);
+}
+
+/* BUTTONS */
+.btn {
+    background: var(--blue);
+    color: #06101c;
+    border: none;
+    padding: 12px 23px;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.btn:hover {
+    box-shadow: 0 0 18px var(--blue);
+}
+
+.secondaryBtn {
+    background: transparent;
+    color: var(--blue);
+    border: 1px solid var(--blue);
+}
+
+/* HERO */
+.hero {
+    min-height: 80vh;
+    padding: 60px 20px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle, #12304c, #080d18 70%);
+}
+
+.heroRobot {
+    font-size: 100px;
+    animation: float 2s infinite;
+}
+
+.hero h1 {
+    font-size: clamp(36px, 7vw, 65px);
+    color: var(--blue);
+    margin: 12px 0;
+    text-shadow: 0 0 20px #00d9ff66;
+}
+
+.hero p {
+    color: #d0e5f5;
+    font-size: 19px;
+    margin-bottom: 25px;
+}
+
+/* SECTIONS */
+section {
+    padding: 70px 8%;
+    text-align: center;
+}
+
+.sectionTitle {
+    font-size: 32px;
+    color: var(--blue);
+    margin-bottom: 12px;
+}
+
+.sectionIntro {
+    max-width: 750px;
+    color: #c2d2e3;
+    margin: 0 auto 30px;
+}
+
+/* CARDS */
+.cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 22px;
+    margin-top: 30px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid #1d4560;
+    padding: 25px 20px;
+    border-radius: 15px;
+    transition: .3s;
+}
+
+.card:hover {
+    transform: translateY(-6px);
+    border-color: var(--blue);
+    box-shadow: 0 0 18px #00d9ff33;
+}
+
+.cardIcon {
+    font-size: 52px;
+}
+
+.card h3 {
+    color: var(--blue);
+    margin: 10px 0;
+}
+
+.card p {
+    color: #c4d4e5;
+}
+
+/* MENU */
+.price {
+    color: var(--blue);
+    font-size: 23px;
+    font-weight: bold;
+    margin: 12px 0;
+}
+
+.foodCard button {
+    margin-top: 12px;
+}
+
+/* CART */
+.cartBox {
+    max-width: 800px;
+    margin: 35px auto 0;
+    background: var(--card);
+    border: 1px solid #1d4560;
+    border-radius: 15px;
+    padding: 25px;
+    text-align: left;
+}
+
+.cartBox h3 {
+    color: var(--blue);
+    margin-bottom: 15px;
+}
+
+.cartItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0;
+    border-bottom: 1px solid #263b55;
+}
+
+.quantityControls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.quantityControls button {
+    background: var(--blue);
+    color: #06101c;
+    border: none;
+    border-radius: 5px;
+    padding: 3px 10px;
+    cursor: pointer;
+}
+
+.total {
+    color: var(--blue);
+    font-size: 23px;
+    font-weight: bold;
+    margin: 20px 0;
+}
+
+.cartBox input {
+    width: 100%;
+    background: #080d18;
+    color: white;
+    border: 1px solid #31506c;
+    border-radius: 7px;
+    padding: 12px;
+    margin: 10px 0;
+}
+
+.cartEmpty {
+    color: #b7c7d9;
+}
+
+/* ORDER MESSAGE */
+#orderMessage {
+    color: var(--blue);
+    margin-top: 18px;
+    font-weight: bold;
+    overflow-wrap: anywhere;
+}
+
+/* FEEDBACK */
+.feedbackForm {
+    max-width: 600px;
+    margin: auto;
+    padding: 30px;
+    background: var(--card);
+    border: 1px solid #1d4560;
+    border-radius: 15px;
+    text-align: left;
+}
+
+.feedbackForm label {
+    display: block;
+    margin-top: 14px;
+}
+
+.feedbackForm input,
+.feedbackForm select,
+.feedbackForm textarea {
+    width: 100%;
+    padding: 12px;
+    margin-top: 7px;
+    border: 1px solid #31506c;
+    border-radius: 7px;
+    background: #080d18;
+    color: white;
+}
+
+.feedbackForm textarea {
+    min-height: 100px;
+}
+
+#feedbackMessage {
+    color: var(--blue);
+    margin-top: 15px;
+}
+
+/* CONTACT */
+.contactBox {
+    max-width: 700px;
+    margin: auto;
+    background: var(--card);
+    border-radius: 15px;
+    padding: 30px;
+}
+
+/* FOOTER */
+footer {
+    text-align: center;
+    background: #050912;
+    border-top: 1px solid #17334c;
+    padding: 25px;
+    color: #9bb2c9;
+}
+
+footer span {
+    color: var(--blue);
+}
+
+/* RESPONSIVE */
+@media(max-width: 650px) {
+    header {
+        justify-content: center;
+    }
+
+    nav {
+        justify-content: center;
+    }
+
+    .cartItem {
+        flex-wrap: wrap;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- FIRST VISIT WELCOME -->
+<div id="welcomeScreen">
+    <div class="introRobot">🤖</div>
+    <h1>WELCOME TO ROBO BITES!</h1>
+    <p>Hello! I am your robot host. Welcome to the future of dining!</p>
+    <button class="btn" onclick="enterRestaurant()">
+        Enter Restaurant
+    </button>
+</div>
+
+<!-- LOADER -->
+<div id="loader">
+    <div class="robot">🤖</div>
+    <h2 style="color:#00d9ff;margin-top:12px">ROBO BITES</h2>
+    <p>Preparing your experience...</p>
+    <div class="progress"><span></span></div>
+</div>
+
+<!-- HEADER -->
+<header>
+    <div class="logo">🤖 ROBO BITES</div>
+
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#about">About</a>
+        <a href="#robots">Our Robots</a>
+        <a href="#how">How It Works</a>
+        <a href="#menu">Menu</a>
+        <a href="#feedback">Feedback</a>
+        <a href="#contact">Contact</a>
+    </nav>
+</header>
+
+<!-- HOME -->
+<section class="hero" id="home">
+    <div class="heroRobot">🤖</div>
+    <h1>ROBO BITES</h1>
+    <p>Where Robotics Meets Delicious Food!</p>
+    <a href="#menu" class="btn">Explore Our Menu</a>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+    <h2 class="sectionTitle">About ROBO BITES</h2>
+    <p class="sectionIntro">
+        ROBO BITES is a futuristic robotic restaurant where
+        smart machines, automation and hospitality come together.
+        We bring technology and delicious food into one exciting experience.
+    </p>
+</section>
+
+<!-- ROBOTS -->
+<section id="robots">
+    <h2 class="sectionTitle">Meet Our Robots</h2>
+    <p class="sectionIntro">
+        Meet the smart machines that make our restaurant special.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="cardIcon">🤖</div>
+            <h3>Welcome Robot</h3>
+            <p>Greets customers and guides them into our restaurant.</p>
+        </div>
+
+        <div class="card">
+            <div class="cardIcon">🛎️</div>
+            <h3>Serving Robot</h3>
+            <p>Helps carry food and deliver it to customers' tables.</p>
+        </div>
+
+        <div class="card">
+            <div class="cardIcon">💡</div>
+            <h3>Smart Lighting</h3>
+            <p>Creates a modern and comfortable dining atmosphere.</p>
+        </div>
+    </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how">
+    <h2 class="sectionTitle">How Our System Works</h2>
+    <p class="sectionIntro">
+        Here is how customers experience our robotic restaurant.
+    </p>
+
+    <div class="cards">
+        <div class="card">
+            <div class="cardIcon">👋</div>
+            <h3>Step 1: Welcome</h3>
+            <p>The welcome robot greets customers at the entrance.</p>
+        </div>
+
+        <div class="card">
+            <div class="cardIcon">📋</div>
+            <h3>Step 2: Choose Food</h3>
+            <p>Customers explore the digital food menu and select items.</p>
+        </div>
+
+        <div class="card">
+            <div class="cardIcon">🛒</div>
+            <h3>Step 3: Place Order</h3>
+            <p>Selected food items are added to the cart and the demo order is placed.</p>
+        </div>
+
+        <div class="card">
+            <div class="cardIcon">🤖</div>
+            <h3>Step 4: Serving</h3>
+            <p>The serving robot represents the delivery of food to the table.</p>
+        </div>
+    </div>
+</section>
+
+<!-- MENU AND ORDERING -->
+<section id="menu">
+    <h2 class="sectionTitle">Our Digital Food Menu</h2>
+    <p class="sectionIntro">
+        Choose your favourite food and add it to your cart.
+    </p>
+
+    <div class="cards">
+
+        <div class="card foodCard">
+            <div class="cardIcon">🍕</div>
+            <h3>Pizza</h3>
+            <p>Cheesy and delicious pizza.</p>
+            <div class="price">₹99</div>
+            <button class="btn" onclick="addToCart('Pizza',99)">
+                Add to Cart
+            </button>
+        </div>
+
+        <div class="card foodCard">
+            <div class="cardIcon">🍔</div>
+            <h3>Burger</h3>
+            <p>Fresh and tasty burger.</p>
+            <div class="price">₹59</div>
+            <button class="btn" onclick="addToCart('Burger',59)">
+                Add to Cart
+            </button>
+        </div>
+
+        <div class="card foodCard">
+            <div class="cardIcon">🥪</div>
+            <h3>Sandwich</h3>
+            <p>Fresh and yummy sandwich.</p>
+            <div class="price">₹49</div>
+            <button class="btn" onclick="addToCart('Sandwich',49)">
+                Add to Cart
+            </button>
+        </div>
+
+        <div class="card foodCard">
+            <div class="cardIcon">☕</div>
+            <h3>Coffee</h3>
+            <p>Hot and refreshing coffee.</p>
+            <div class="price">₹39</div>
+            <button class="btn" onclick="addToCart('Coffee',39)">
+                Add to Cart
+            </button>
+        </div>
+
+    </div>
+
+    <!-- CART -->
+    <div class="cartBox">
+        <h3>🛒 Your Shopping Cart</h3>
+
+        <div id="cartItems">
+            <p class="cartEmpty">Your cart is empty. Add some delicious food!</p>
+        </div>
+
+        <div class="total">
+            Total: ₹<span id="cartTotal">0</span>
+        </div>
+
+        <label for="customerOrderName">Customer Name</label>
+        <input
+            type="text"
+            id="customerOrderName"
+            placeholder="Enter your name"
+        >
+
+        <label for="tableNumber">Table Number</label>
+        <input
+            type="number"
+            id="tableNumber"
+            placeholder="Enter your table number"
+            min="1"
+        >
+
+        <button class="btn" onclick="placeOrder()">
+            Place Demo Order
+        </button>
+
+        <p id="orderMessage" aria-live="polite"></p>
+    </div>
+</section>
+
+<!-- FEEDBACK -->
+<section id="feedback">
+    <h2 class="sectionTitle">Customer Feedback</h2>
+    <p class="sectionIntro">
+        Tell us about your experience at ROBO BITES.
+    </p>
+
+    <form class="feedbackForm" id="feedbackForm">
+
+        <label for="feedbackName">Your Name</label>
+        <input
+            type="text"
+            id="feedbackName"
+            placeholder="Enter your name"
+            required
+        >
+
+        <label for="feedbackRating">Your Rating</label>
+        <select id="feedbackRating" required>
+            <option value="">Choose your rating</option>
+            <option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+            <option value="4">⭐⭐⭐⭐ Very Good</option>
+            <option value="3">⭐⭐⭐ Good</option>
+            <option value="2">⭐⭐ Average</option>
+            <option value="1">⭐ Needs Improvement</option>
+        </select>
+
+        <label for="feedbackText">Your Comments</label>
+        <textarea
+            id="feedbackText"
+            placeholder="Write your feedback..."
+            required
+        ></textarea>
+
+        <button class="btn" type="submit">Submit Feedback</button>
+
+        <p id="feedbackMessage" aria-live="polite"></p>
+    </form>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+    <h2 class="sectionTitle">Contact Us</h2>
+
+    <div class="contactBox">
+        <h3>🤖 ROBO BITES</h3>
+        <p>Where the Future of Dining Begins!</p>
+        <p>Email: robobites@example.com</p>
+        <p>Thank you for visiting our restaurant.</p>
+    </div>
+</section>
+
+<footer>
+    <p>© 2026 <span>ROBO BITES</span> | Future of Dining</p>
+    <p>Designed with Robotics and Innovation 🤖</p>
+</footer>
+
+<script>
+
+/* WELCOME SCREEN */
+function enterRestaurant() {
+    document.getElementById("welcomeScreen").classList.add("hide");
+}
+
+window.addEventListener("load", function() {
+    setTimeout(function() {
+        document.getElementById("loader").style.display = "none";
+    }, 1300);
+});
+
+/* SHOPPING CART */
+let cart = [];
+
+function addToCart(name, price) {
+    let existingItem = cart.find(item => item.name === name);
+
+    if (existingItem) {
+        existingItem.quantity++;
+    } else {
+        cart.push({
+            name: name,
+            price: price,
+            quantity: 1
+        });
+    }
+
+    renderCart();
+
+    document.getElementById("orderMessage").textContent =
+        name + " added to your cart!";
+}
+
+function changeQuantity(name, change) {
+    let item = cart.find(item => item.name === name);
+
+    if (!item) return;
+
+    item.quantity += change;
+
+    if (item.quantity <= 0) {
+        cart = cart.filter(item => item.name !== name);
+    }
+
+    renderCart();
+}
+
+function renderCart() {
+    const cartItems = document.getElementById("cartItems");
+    const cartTotal = document.getElementById("cartTotal");
+
+    cartItems.innerHTML = "";
+
+    let total = 0;
+
+    if (cart.length === 0) {
+        cartItems.innerHTML =
+            '<p class="cartEmpty">Your cart is empty. Add some delicious food!</p>';
+    }
+
+    cart.forEach(item => {
+        let subtotal = item.price * item.quantity;
+        total += subtotal;
+
+        const row = document.createElement("div");
+        row.className = "cartItem";
+
+        const name = document.createElement("span");
+        name.textContent =
+            item.name + " - ₹" + item.price + " each";
+
+        const controls = document.createElement("div");
+        controls.className = "quantityControls";
+
+        const minus = document.createElement("button");
+        minus.textContent = "-";
+        minus.type = "button";
+        minus.setAttribute("aria-label", "Decrease " + item.name);
+        minus.addEventListener("click", () => {
+            changeQuantity(item.name, -1);
+        });
+
+        const quantity = document.createElement("span");
+        quantity.textContent = item.quantity;
+
+        const plus = document.createElement("button");
+        plus.textContent = "+";
+        plus.type = "button";
+        plus.setAttribute("aria-label", "Increase " + item.name);
+        plus.addEventListener("click", () => {
+            changeQuantity(item.name, 1);
+        });
+
+        controls.append(minus, quantity, plus);
+        row.append(name, controls);
+        cartItems.appendChild(row);
+    });
+
+    cartTotal.textContent = total;
+}
+
+async function placeOrder() {
+    const name = document.getElementById("customerOrderName").value.trim();
+    const table = document.getElementById("tableNumber").value.trim();
+    const message = document.getElementById("orderMessage");
+
+    if (cart.length === 0) {
+        message.textContent = "Please add food to your cart first.";
+        return;
+    }
+
+    if (!name || !table || Number(table) < 1) {
+        message.textContent = "Please enter your name and a valid table number.";
+        return;
+    }
+
+    const total = cart.reduce(
+        (sum, item) => sum + item.price * item.quantity, 0
+    );
+
+    const orderNumber = "RB" + Date.now().toString().slice(-6);
+
+    const orderData = {
+        type: "newOrder",
+        orderId: orderNumber,
+        customer: name,
+        table: "Table " + table,
+        items: cart.map(item => ({
+            name: item.name,
+            quantity: item.quantity
+        })),
+        total: total
+    };
+
+    message.textContent = "Sending your order...";
+
+    try {
+        await fetch(
+            "https://script.google.com/macros/s/AKfycbyijfBbJcpe4tf-06QXaP8abPdhCCOd4aTvS81UwnByu7OgJMOgP0xI3BwcwxdLvhsW/exec",
+            {
+                method: "POST",
+                mode: "no-cors",
+                headers: {
+                    "Content-Type": "text/plain;charset=utf-8"
+                },
+                body: JSON.stringify(orderData)
+            }
+        );
+
+        message.textContent =
+            "Order " + orderNumber +
+            " submitted! Please check with restaurant staff.";
+
+        cart = [];
+        renderCart();
+
+        document.getElementById("customerOrderName").value = "";
+        document.getElementById("tableNumber").value = "";
+
+    } catch (error) {
+        message.textContent =
+            "Could not send the order. Please try again.";
+    }
+}
+
+
+/* CUSTOMER FEEDBACK */
+document.getElementById("feedbackForm").addEventListener(
+    "submit",
+    function(event) {
+        event.preventDefault();
+
+        const name =
+            document.getElementById("feedbackName").value.trim();
+
+        const rating =
+            document.getElementById("feedbackRating").value;
+
+        const feedback =
+            document.getElementById("feedbackText").value.trim();
+
+        if (!name || !rating || !feedback) {
+            return;
+        }
+
+        document.getElementById("feedbackMessage").textContent =
+            "Thank you " + name +
+            "! Your feedback has been received. 🤖";
+
+        this.reset();
+    }
+);
+
+</script>
+
+</body>
+</html>
